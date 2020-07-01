@@ -2,7 +2,7 @@ import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
 
-ticker = "TSLA"
+ticker = "XLK"
 tsla = yf.Ticker(ticker)
 df = tsla.history(period='5y')
 

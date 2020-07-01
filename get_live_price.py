@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 from datetime import date
 import pandas as pd
 
-api_key = "PVBSBOZLVFHB2VHE"
+with open('alpha_vantage_api_key') as f:
+    key = f.read()
+    
+api_key = key
 
 ticker = 'TSLA'
 

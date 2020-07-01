@@ -1,20 +1,38 @@
+# Writes rolling window live price to file, to be read by live_graph.py
+
 from alpha_vantage.timeseries import TimeSeries
 import matplotlib.pyplot as plt
-from datetime import date
+from datetime import datetime
 import pandas as pd
+from yahoo_fin import stock_info as si
+import time
+import os
 
-with open('alpha_vantage_api_key') as f:
-    key = f.read()
-    
-api_key = key
+if __name__ == '__main__':
+    ticker = 'TSLA'
+    window_size = 20
+    filename = f'live-{ticker}.txt'
+    os.system(f"touch {filename}")
 
-ticker = 'TSLA'
+    while(True):
+        count = 0
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+        if len(lines) > 20:
+            with open(filename, 'w') as f:
+                lines = lines[1:]
+                for line in lines:
+                    f.write(line)
+        
+        with open(filename, 'a+') as f:
+            now = datetime.now()
+            current_time = now.strftime("%H:%M:%S")
 
-ts = TimeSeries(api_key)
-data = ts.get_intraday(symbol='TSLA',interval='1min')
-df = pd.DataFrame.from_dict(data[0], orient='index')
-
-last_minute_open = df['1. open'][-1]
-last_minute_close = df['4. close'][-1]
-
-print(last_minute_open, last_minute_close)
+            live_price = si.get_live_price(ticker)
+            print(current_time, live_price)
+            f.write(str(current_time))
+            f.write(', ')
+            f.write(str(live_price))
+            f.write('\n')
+            f.flush()
+            time.sleep(1)

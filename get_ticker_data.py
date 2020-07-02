@@ -5,11 +5,8 @@ import argparse
 from pandas.plotting import register_matplotlib_converters
 
 
-def display_chart(ticker):
+def display_chart(ticker, small_window, large_window, time_window):
         yahoo = yf.Ticker(ticker)
-        small_window = 5
-        large_window = 15
-        time_window = '3mo'
         df = yahoo.history(period=time_window)
 
         rolling_small = df.rolling(window=small_window).mean()
@@ -39,16 +36,18 @@ if __name__ == '__main__':
     parser.add_argument('--ticker')
     args = parser.parse_args()
 
+    small_window = 5
+    large_window = 15
+    time_window = '3mo'
+
 if args.filename:
     with open(args.filename) as file:
         tickers = file.readlines()
         tickers = [ticker.strip() for ticker in tickers]
-    print(tickers)
-
-    num_tickers = len(tickers)
 
     for ticker in tickers:
-        display_chart(ticker)
+        display_chart(ticker, small_window, large_window, time_window)
+
 elif args.ticker:
     ticker = args.ticker
-    display_chart(ticker)
+    display_chart(ticker, small_window, large_window, time_window)

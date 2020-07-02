@@ -4,45 +4,13 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 import numpy as np
-
-ticker = 'TSLA'
-
-style.use('fivethirtyeight')
-
-fig = plt.figure()
-ax1 = fig.add_subplot(1,1,1)
-ax1.tick_params(axis='x', rotation=90)
-# ax1.get_xaxis().set_visible(False)
-
-
+import argparse
 
 def animate(i):
     filename=f'live-{ticker}.txt'
     graph_data = open(filename, 'r').read()
     lines = graph_data.split('\n')
     xs = []
-    # x2 = np.arange(0, 61)
-    y_live = []
-    y_small = []
-    y_large = []
-    for line in lines:
-        if len(line) > 1:
-            x, y1, y2, y3 = line.split(',')
-            xs.append(x)
-            y_live.append(float(y1))
-            y_small.append(float(y2))
-            y_large.append(float(y3))
-    ax1.clear()
-    ax1.plot(xs, y_live)
-
-
-if __name__ == '__main__':
-    # ani = animation.FuncAnimation(fig, animate, interval=1000)
-    filename=f'live-{ticker}.txt'
-    graph_data = open(filename, 'r').read()
-    lines = graph_data.split('\n')
-    xs = []
-    # x2 = np.arange(0, 61)
     y_live = []
     y_small = []
     y_large = []
@@ -58,7 +26,27 @@ if __name__ == '__main__':
             y_small.append(float(sma_small))
             y_large.append(float(sma_large))
     ax1.clear()
-    ax1.plot(xs, y_live)
-    ax1.plot(xs, y_small)
-    ax1.plot(xs, y_large)    
+    ax1.plot(xs, y_live, color= 'black', label='Live Price')
+    ax1.plot(xs, y_small, color='green', label='SMA Short Term')
+    ax1.plot(xs, y_large, color='red', label='SMA Long Term') 
+    ax1.legend(loc='lower left')
+
+
+if __name__ == '__main__':
+    
+    # ticker = 'NKLA'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('ticker')
+    args = parser.parse_args()
+    ticker = args.ticker
+
+    # style.use('fivethirtyeight')
+
+    fig = plt.figure(figsize=(12, 8))
+    fig.suptitle(f"{ticker}")
+    ax1 = fig.add_subplot(1,1,1)
+    ax1.tick_params(axis='x', rotation=90)
+    ax1.get_xaxis().set_visible(False)
+
+    ani = animation.FuncAnimation(fig, animate, interval=1000)  
     plt.show()

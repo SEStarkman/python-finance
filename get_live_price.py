@@ -46,10 +46,10 @@ def write_live_price(ticker, window_size, small_window, large_window, interval):
         
 
 if __name__ == '__main__':
-    window_size = 1800
-    small_window = 15
-    large_window = 60
     interval = 1
+    small_window = 10
+    large_window = 30
+    window_size = 60
     parser = argparse.ArgumentParser()
     parser.add_argument('ticker')
     args = parser.parse_args()
